@@ -156,5 +156,4 @@ export namespace $string {
   > = Str extends `${infer Head}${infer Tail}`
     ? $length<Tail, [...Tuple, any]>
     : Tuple["length"];
-
 }
