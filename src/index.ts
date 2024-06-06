@@ -28,26 +28,45 @@ export type $switch<
 export type $equal<Left, Right, Truthy = true, Falsy = false> = $extends<
   Left,
   Right,
+  $extends<Right, Left, Truthy, Falsy>,
+  Falsy
+>;
+export type $notEqual<Left, Right, Truthy = true, Falsy = false> = $equal<
+  $not<$equal<Left, Right, true, false>>,
+  true,
   Truthy,
   Falsy
 >;
+
+// Logical types
 export type $or<
   Left extends boolean,
   Right extends boolean,
   Truthy = true,
   Falsy = false
-> = $extends<Left, true, Truthy, $extends<Right, true, Truthy, Falsy>>;
+> = $equal<Left, true, Truthy, $equal<Right, true, Truthy, Falsy>>;
 export type $and<
   Left extends boolean,
   Right extends boolean,
   Truthy = true,
   Falsy = false
-> = $extends<Left, true, $extends<Right, true, Truthy, Falsy>, Falsy>;
+> = $equal<Left, true, $equal<Right, true, Truthy, Falsy>, Falsy>;
 export type $not<
   Condition extends boolean,
   Truthy = true,
   Falsy = false
-> = $extends<Condition, true, Falsy, Truthy>;
+> = $equal<Condition, true, Falsy, Truthy>;
+export type $xor<
+  Left extends boolean,
+  Right extends boolean,
+  Truthy = true,
+  Falsy = false
+> = $equal<
+  $or<$and<Left, $not<Right>>, $and<$not<Left>, Right>>,
+  true,
+  Truthy,
+  Falsy
+>;
 
 // Global Transformations types
 export type $toString<
@@ -61,9 +80,18 @@ export namespace $string {
     Right extends string
   > = `${Left}${Right}`;
 
-  export type $endsWith<String extends string, Search extends string> =  String extends `${infer Left}${Search}` ? true : false;
-  export type $startsWith<String extends string, Search extends string> =  String extends `${Search}${infer Right}` ? true : false;
-  export type $includes<String extends string, Search extends string> =  String extends `${infer Left}${Search}${infer Right}` ? true : false;
+  export type $endsWith<
+    String extends string,
+    Search extends string
+  > = String extends `${infer Left}${Search}` ? true : false;
+  export type $startsWith<
+    String extends string,
+    Search extends string
+  > = String extends `${Search}${infer Right}` ? true : false;
+  export type $includes<
+    String extends string,
+    Search extends string
+  > = String extends `${infer Left}${Search}${infer Right}` ? true : false;
 
   export type $replace<
     String extends string,
@@ -157,5 +185,3 @@ export namespace $string {
     ? $length<Tail, [...Tuple, any]>
     : Tuple["length"];
 }
-
-
