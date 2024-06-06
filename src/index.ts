@@ -36,7 +36,7 @@ export type $or<
   Right extends boolean,
   Truthy = true,
   Falsy = false
-> = $extends<Left, true, $extends<Right, true, Truthy, Falsy>, Falsy>;
+> = $extends<Left, true, Truthy, $extends<Right, true, Truthy, Falsy>>;
 export type $and<
   Left extends boolean,
   Right extends boolean,
@@ -157,3 +157,5 @@ export namespace $string {
     ? $length<Tail, [...Tuple, any]>
     : Tuple["length"];
 }
+
+
