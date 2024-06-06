@@ -61,18 +61,9 @@ export namespace $string {
     Right extends string
   > = `${Left}${Right}`;
 
-  export type $endsWith<
-    String extends string,
-    Search extends string
-  > = String extends `${infer Left}${Search}` ? true : false;
-  export type $startsWith<
-    String extends string,
-    Search extends string
-  > = String extends `${Search}${infer Right}` ? true : false;
-  export type $includes<
-    String extends string,
-    Search extends string
-  > = String extends `${infer Left}${Search}${infer Right}` ? true : false;
+  export type $endsWith<String extends string, Search extends string> =  String extends `${infer Left}${Search}` ? true : false;
+  export type $startsWith<String extends string, Search extends string> =  String extends `${Search}${infer Right}` ? true : false;
+  export type $includes<String extends string, Search extends string> =  String extends `${infer Left}${Search}${infer Right}` ? true : false;
 
   export type $replace<
     String extends string,
@@ -166,58 +157,4 @@ export namespace $string {
     ? $length<Tail, [...Tuple, any]>
     : Tuple["length"];
 
-  export type $slice<
-    String extends string,
-    Start extends number,
-    End extends number,
-    Index extends any[] = []
-  > = String extends `${infer Head}${infer Tail}`
-    ? $sliceHelper<Head, Tail, Start, End, ["index", ...Index], "", Index>
-    : "";
-
-  type $sliceHelper<
-    Head extends string,
-    Tail extends string,
-    Start extends number,
-    End extends number,
-    Index extends ["index", ...any[]],
-    Result extends string,
-    Tuple extends any[]
-  > = Index["length"] extends End
-    ? Result
-    : Index["length"] extends Start
-    ? $sliceHelper<
-        Tail extends string ? `${Tail}` : "",
-        Tail extends string ? Tail : "",
-        Start,
-        End,
-        ["index", ...Index],
-        `${Result}${Head}`,
-        [any, ...Tuple]
-      >
-    : $sliceHelper<
-        Tail extends string ? `${Tail}` : "",
-        Tail extends string ? Tail : "",
-        Start,
-        End,
-        ["index", ...Index],
-        Result,
-        Tuple
-      >;
 }
-
-type a = $string.$replace<"1231", "1", "2">;
-type b = $string.$replaceAll<"12311", "1", "2">;
-type c = $string.$trim<" 1231  ">;
-type d = $string.$repeat<"1", 3>;
-type e = $string.$toLowerCase<"1231abcD">;
-type f = $string.$toUpperCase<"1231abcD">;
-type g = $string.$split<"a1231abcD", "1">;
-type h = $string.$charAt<"1231abcD", 1>;
-type i = $string.$length<"1231abcD">;
-type j = $string.$concat<"1231", "abcD">;
-type k = $string.$endsWith<"1231abcD", "D">;
-type l = $string.$startsWith<"1231abcD", "1">;
-type m = $string.$startsWith<"1231abcD", "2">;
-type n = $string.$includes<"1231abcD", "12">;
-type o = $string.$slice<"a1231abcD", 1, 3>;
