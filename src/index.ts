@@ -15,3 +15,15 @@ export type $equal<Left, Right, Truthy = true, Falsy = false> = $extends<Left, R
 export type $or<Left extends boolean, Right extends boolean, Truthy = true, Falsy = false> = $extends<Left, true, $extends<Right, true, Truthy, Falsy>, Falsy>;
 export type $and<Left extends boolean, Right extends boolean, Truthy = true, Falsy = false> = $extends<Left, true, $extends<Right, true, Truthy, Falsy>, Falsy>;
 export type $not<Condition extends boolean, Truthy = true, Falsy = false> = $extends<Condition, true, Falsy, Truthy>;
+
+// String Transformations types
+export namespace $string {
+    export type $concat<Left extends string, Right extends string> = `${Left}${Right}`;
+    export type $replace<String extends string, Search extends string, Replacement extends string> = String extends `${infer Left}${Search}${infer Right}`? `${Left}${Replacement}${Right}` : String;
+    type _replaceAllHelper<String extends string, Search extends string, Replacement extends string> = String extends `${infer Left}${Search}${infer Right}` ? `${Left}${_replaceAllHelper<Right, Search, Replacement>}${Replacement}` : String;
+    export type $replaceAll<String extends string, Search extends string, Replacement extends string> = $if<$equal<String, $replace<String, Search, Replacement>>, String, _replaceAllHelper<$replace<String, Search, Replacement>, Search, Replacement>>;
+}
+
+
+type a = $string.$replace<'1231', '1', '2'>;
+type b = $string.$replaceAll<'12311', '1', '2'>;
