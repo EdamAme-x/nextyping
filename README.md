@@ -1,4 +1,6 @@
 # nextyping
 Next generation type system for TypeScript
 
-Registry: JSR
+Nextyping is superset of typescript
+
+Registry: JSR / https://jsr.io/@edamame-x/nextyping
