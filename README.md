@@ -2,6 +2,7 @@
 Next generation type system for TypeScript
 
 Nextyping is superset of typescript
+Exports only types.
 
 ```ts
 import type { $if, $equal, $string } from "jsr:@edamame-x/nextyping";
