@@ -229,7 +229,7 @@ export namespace $number {
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[],
     Result extends any[] = []
-  > = Value[number] extends _plusSign ? 
+  > = Value["length"] extends 0 ? Other : Value[number] extends _plusSign ? 
    Other["length"] extends 0 ? Result : _addHelper<Value, Other extends [...infer Head, infer Rest] ? Head : [], [...(Value extends [...infer Head, infer Rest] ? Head : [])]> 
    : _addHelper<Other, Value>;
 
