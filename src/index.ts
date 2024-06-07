@@ -20,9 +20,12 @@ export type $if<Condition extends boolean, Then, Else> = $extends<
 >;
 export type $switch<
   Case extends any,
-  Cases extends any[],
+  Cases extends {
+    condition: any;
+    result: any;
+  }[],
   Default = never
-> = Case extends Cases[number] ? Cases[number] : Default;
+> = $equal<Case, Cases[number]["condition"], Cases[number]["result"], Default>;
 
 // Conditional types
 export type $equal<Left, Right, Truthy = true, Falsy = false> = $extends<
@@ -68,17 +71,23 @@ export type $xor<
   Falsy
 >;
 
-// Global Transformations types
-export type $toString<
-  Target extends string | number | bigint | boolean | null | undefined
-> = `${Target}`;
-
 // String Transformations types
 export namespace $string {
+  type _canToStringTypes = string | number | bigint | boolean | null | undefined;
+  type _toStringHelper<Target> =  Target extends _canToStringTypes ? `${Target}` : "";
+
+  export type $toString<
+  Target
+> = $extends<Target, string, Target, _toStringHelper<Target>>;
+
+  export type $new<
+    Target extends string = ""
+  > = $toString<Target>;
+
   export type $concat<
-    Left extends string,
-    Right extends string
-  > = `${Left}${Right}`;
+    Left extends _canToStringTypes,
+    Right extends _canToStringTypes
+  > = `${$toString<Left>}${$toString<Right>}`;
 
   export type $endsWith<
     String extends string,
@@ -184,4 +193,19 @@ export namespace $string {
   > = Str extends `${infer Head}${infer Tail}`
     ? $length<Tail, [...Tuple, any]>
     : Tuple["length"];
+}
+
+export namespace $number {
+  type _plusSign = "+";
+  type _minusSign = "-";
+  type _newHelper<
+    Value extends number,
+    Sign extends _plusSign | _minusSign,
+    Tuple extends any[] = []
+  > = Tuple["length"] extends Value ? Tuple : _newHelper<Value, Sign, [...Tuple, Sign]>;
+
+  export type $new<
+    Value extends number = 0,
+    Sign extends _plusSign | _minusSign = _plusSign
+  > = $string.$toString<Value> extends `-${infer Number}` ? never : _newHelper<Value, Sign>;
 }
