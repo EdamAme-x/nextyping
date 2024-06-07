@@ -228,17 +228,37 @@ export namespace $number {
   type _addHelper<
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[],
-    Result extends any[] = []
-  > = Value["length"] extends 0 ? Other : Value[number] extends _plusSign ? 
-   Other["length"] extends 0 ? Result : _addHelper<Value, Other extends [...infer Head, infer Rest] ? Head : [], [...(Value extends [...infer Head, infer Rest] ? Head : [])]> 
-   : _addHelper<Other, Value>;
+    Result extends any[] = Value
+  > = Value extends [...infer Head, infer Rest]
+    ? Head extends _plusSign[]
+      ? Other extends [...infer OtherHead, infer OtherRest]
+        ? _addHelper<
+            Head,
+            OtherHead,
+            [
+              ...(Result extends [...infer ResultHead, infer ResultRest]
+                ? ResultHead
+                : [])
+            ]
+          >
+        : Result
+      : _addHelper<Other, Value>
+    : Other;
 
   export type $add<
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[]
-  > = $if<
-    $equal<Value[number], Other[number]>,
-    [...Value, ...Other],
-    _addHelper<Value, Other>
-  >;
+  > = Value extends []
+    ? Other extends []
+      ? []
+      : $if<
+          $equal<Value[number], Other[number]>,
+          [...Value, ...Other],
+          _addHelper<Value, Other>
+        >
+    : $if<
+        $equal<Value[number], Other[number]>,
+        [...Value, ...Other],
+        _addHelper<Value, Other>
+      >;
 }
