@@ -207,5 +207,27 @@ export namespace $number {
   export type $new<
     Value extends number = 0,
     Sign extends _plusSign | _minusSign = _plusSign
-  > = $string.$toString<Value> extends `-${infer Number}` ? never : _newHelper<Value, Sign>;
+  > = $string.$toString<Value> extends `-${number}` ? never : _newHelper<Value, Sign>;
+
+  export type $abs<
+    Value extends _plusSign[] | _minusSign[]
+  > = Value[number] extends _plusSign ? Value : $new<Value["length"], _plusSign>
+
+  // Va
+  type _addSorter<
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[],
+  > = Value[number] extends _plusSign ? [Value, Other] : [Other, Value];
+
+  type _addHelper<
+    Value extends [_plusSign[], _minusSign[]],
+    Result extends any[] = []
+  > = 1
+
+  export type $add<
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[]
+  > = $if<$equal<Value[number], Other[number]>, [...Value, ...Other], _addHelper<_addSorter<Value, Other>>>;
 }
+
+type a = $number.$add<["+", "+", "+"], ["-", "-"]>;
