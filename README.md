@@ -4,8 +4,16 @@ Next generation type system for TypeScript
 Nextyping is superset of typescript
 Exports only types.
 
+```bash
+npx jsr add @edamame-x/nextyping
+pnpx jsr add @edamame-x/nextyping
+yarn dlx jsr add @edamame-x/nextyping
+bunx jsr add @edamame-x/nextyping
+deno add @edamame-x/nextyping
+```
+
 ```ts
-import type { $if, $equal, $string } from "jsr:@edamame-x/nextyping";
+import type { $if, $equal, $string } from "@edamame-x/nextyping";
 
 type isOne<T extends number> = $if<$equal<1, T>, "yes", "no">;
 
