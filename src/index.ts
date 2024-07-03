@@ -270,4 +270,22 @@ export namespace $number {
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[]
   > = $add<Value, $invert<Other>>
+
+  
+  type _multHelper<
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[],
+    Result extends any[] = []
+  > = Other extends [infer _, ...infer Rest]
+    ? Rest extends _plusSign[] | _minusSign[] ? _multHelper<Value, Rest, [...Result, ...Value]> : never
+    : Result
+
+  export type $mult<
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[]
+  > = _multHelper<Value, Other> extends infer MultResult
+    ? $sign<Value> extends $sign<Other>
+      ? MultResult
+      : MultResult extends _plusSign[] | _minusSign[] ? $invert<MultResult> : never
+    : never
 }
