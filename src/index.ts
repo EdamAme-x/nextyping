@@ -199,7 +199,7 @@ export namespace $string {
   export type $length<
     Str extends string,
     Tuple extends any[] = []
-  > = Str extends `${infer Head}${infer Tail}`
+  > = Str extends `${infer _Head}${infer Tail}`
     ? $length<Tail, [...Tuple, any]>
     : Tuple["length"];
 }
@@ -236,24 +236,24 @@ export namespace $number {
   > = Value[number] extends _plusSign ? $string.$toString<Value["length"]> : $string.$concat<"-", $string.$toString<Value["length"]>>;
 
   export type $range<N extends number, Tuple extends number[] = []> = Tuple["length"] extends N
-  ? Tuple
-  : $range<N, [...Tuple, Tuple["length"]]>;
+    ? Tuple
+    : $range<N, [...Tuple, Tuple["length"]]>;
 
   type _moreThanHelper<
     Value extends _plusSign[],
     Other extends _plusSign[],
     OtherRange extends number[] = $range<Other["length"]>
-> = Value["length"] extends OtherRange[number] ? false : Value["length"] extends Other["length"] ? false : true;
+  > = Value["length"] extends OtherRange[number] ? false : Value["length"] extends Other["length"] ? false : true;
 
   export type $moreThan<
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[],
   > = Value extends _plusSign[]
-  ? Other extends _plusSign[]
-  ? _moreThanHelper<Value, Other>
-  : $not<_moreThanHelper<Value, $invert<Other> extends _plusSign[] ? $invert<Other> : never>>
-  : Other extends _plusSign[] ? $not<_moreThanHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
-  _moreThanHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>;
+    ? Other extends _plusSign[]
+    ? _moreThanHelper<Value, Other>
+    : $not<_moreThanHelper<Value, $invert<Other> extends _plusSign[] ? $invert<Other> : never>>
+    : Other extends _plusSign[] ? $not<_moreThanHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
+    _moreThanHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>;
 
   export type $lessThan<
     Value extends _plusSign[] | _minusSign[],
@@ -328,7 +328,9 @@ export namespace $number {
     Value extends _plusSign[],
     Other extends _plusSign[],
     Result extends any[] = []
-  > = [...Value, ...Other]
+  > = $number.$lessThan<Value, Other> extends true
+    ? Result
+    : _divHelper<$number.$sub<Value, Other> extends _plusSign[] ? $number.$sub<Value, Other> : [], Other, [...Result, "+"]>
 
   export type $div<
     Value extends _plusSign[] | _minusSign[],
@@ -341,5 +343,3 @@ export namespace $number {
     : Other extends _plusSign[] ? $invert<_divHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
     _divHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>
 }
-
-type a = $number.$moreThan<["+", "+"], ["+", "+"]>;
