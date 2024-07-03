@@ -25,7 +25,7 @@ export type $switch<
     result: any;
   }[],
   Default = never
-> = $equal<Case, Cases[number]["condition"], Cases[number]["result"], Default>;
+> = Case extends Cases[number]["condition"] ? Cases[number]["result"] : Default;
 
 // Conditional types
 export type $equal<Left, Right, Truthy = true, Falsy = false> = $extends<
@@ -167,17 +167,17 @@ export namespace $string {
 
   export type $toLowerCase<Str extends string> =
     Str extends `${infer Head}${infer Tail}`
-      ? `${Head extends Uppercase<Head>
-          ? Lowercase<Head>
-          : Head}${$toLowerCase<Tail>}`
-      : Str;
+    ? `${Head extends Uppercase<Head>
+    ? Lowercase<Head>
+    : Head}${$toLowerCase<Tail>}`
+    : Str;
 
   export type $toUpperCase<Str extends string> =
     Str extends `${infer Head}${infer Tail}`
-      ? `${Head extends Lowercase<Head>
-          ? Uppercase<Head>
-          : Head}${$toUpperCase<Tail>}`
-      : Str;
+    ? `${Head extends Lowercase<Head>
+    ? Uppercase<Head>
+    : Head}${$toUpperCase<Tail>}`
+    : Str;
 
   export type $split<
     Str extends string,
@@ -192,8 +192,8 @@ export namespace $string {
     Tuple extends any[] = []
   > = Str extends `${infer Head}${infer Tail}`
     ? _tuple_length<Tuple> extends Index
-      ? Head
-      : $charAt<Tail, Index, [...Tuple, any]>
+    ? Head
+    : $charAt<Tail, Index, [...Tuple, any]>
     : Str;
 
   export type $length<
@@ -226,22 +226,22 @@ export namespace $number {
     Value[number] extends _plusSign ? Value : $new<Value["length"], _plusSign>;
 
   type _addHelper<
-  Value extends _plusSign[] | _minusSign[],
-  Other extends _plusSign[] | _minusSign[],
-  Result extends any[] = Value
-> = Value extends [...infer Head, infer Rest]
-  ? Head extends _plusSign[]
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[],
+    Result extends any[] = Value
+  > = Value extends [...infer Head, infer Rest]
+    ? Head extends _plusSign[]
     ? Other extends [...infer OtherHead, infer OtherRest]
-      ? _addHelper<
-          Head,
-          OtherHead extends _plusSign[] | _minusSign[] ? OtherHead : [],
-          [...(Result extends [...infer ResultHead, infer ResultRest]
-            ? ResultHead
-            : [])]
-        >
-      : Result
+    ? _addHelper<
+      Head,
+      OtherHead extends _plusSign[] | _minusSign[] ? OtherHead : [],
+      [...(Result extends [...infer ResultHead, infer ResultRest]
+        ? ResultHead
+        : [])]
+    >
+    : Result
     : _addHelper<Other, Value>
-  : Other
+    : Other
 
   export type $add<
     Value extends _plusSign[] | _minusSign[],
@@ -254,5 +254,5 @@ export namespace $number {
     $equal<Value[number], Other[number]>,
     [...Value, ...Other],
     _addHelper<Value, Other>
-  > 
+  >
 }
