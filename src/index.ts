@@ -225,6 +225,8 @@ export namespace $number {
   export type $abs<Value extends _plusSign[] | _minusSign[]> =
     Value[number] extends _plusSign ? Value : $new<Value["length"], _plusSign>;
 
+  export type $negate<Value extends _plusSign[] | _minusSign[]> = Value[number] extends _minusSign ? Value : $new<Value["length"], _minusSign>;
+
   type _addHelper<
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[],
@@ -255,4 +257,9 @@ export namespace $number {
     [...Value, ...Other],
     _addHelper<Value, Other>
   >
+
+  export type $minus<
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[]
+  > = $add<Value, $negate<Other>>
 }
