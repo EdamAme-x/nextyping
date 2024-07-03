@@ -101,15 +101,15 @@ export namespace $string {
   export type $endsWith<
     String extends string,
     Search extends string
-  > = String extends `${infer Left}${Search}` ? true : false;
+  > = String extends `${infer _Left}${Search}` ? true : false;
   export type $startsWith<
     String extends string,
     Search extends string
-  > = String extends `${Search}${infer Right}` ? true : false;
+  > = String extends `${Search}${infer _Right}` ? true : false;
   export type $includes<
     String extends string,
     Search extends string
-  > = String extends `${infer Left}${Search}${infer Right}` ? true : false;
+  > = String extends `${infer _Left}${Search}${infer _Right}` ? true : false;
 
   export type $replace<
     String extends string,
@@ -227,17 +227,25 @@ export namespace $number {
 
   export type $negate<Value extends _plusSign[] | _minusSign[]> = Value[number] extends _minusSign ? Value : $new<Value["length"], _minusSign>;
 
+  export type $invert<Value extends _plusSign[] | _minusSign[]> = Value[number] extends _plusSign ? $new<Value["length"], _minusSign> : $new<Value["length"], _plusSign>;
+
+  export type $sign<Value extends _plusSign[] | _minusSign[]> = Value["length"] extends 0 ? 0 : Value[number] extends _plusSign ? 1 : -1;
+
+  export type $toString<
+    Value extends _plusSign[] | _minusSign[]
+  > = Value[number] extends _plusSign ? $string.$toString<Value["length"]> : $string.$concat<"-", $string.$toString<Value["length"]>>;
+
   type _addHelper<
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[],
     Result extends any[] = Value
-  > = Value extends [...infer Head, infer Rest]
+  > = Value extends [...infer Head, infer _Rest]
     ? Head extends _plusSign[]
-    ? Other extends [...infer OtherHead, infer OtherRest]
+    ? Other extends [...infer OtherHead, infer _OtherRest]
     ? _addHelper<
       Head,
       OtherHead extends _plusSign[] | _minusSign[] ? OtherHead : [],
-      [...(Result extends [...infer ResultHead, infer ResultRest]
+      [...(Result extends [...infer ResultHead, infer _ResultRest]
         ? ResultHead
         : [])]
     >
@@ -258,8 +266,8 @@ export namespace $number {
     _addHelper<Value, Other>
   >
 
-  export type $minus<
+  export type $sub<
     Value extends _plusSign[] | _minusSign[],
     Other extends _plusSign[] | _minusSign[]
-  > = $add<Value, $negate<Other>>
+  > = $add<Value, $invert<Other>>
 }

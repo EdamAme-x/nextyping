@@ -26,3 +26,5 @@ type splittedString = $string.$split("a1aaa1bbb1cccc", "1"); // ["a", "aaa", "bb
 ```
 
 Registry: JSR / https://jsr.io/@edamame-x/nextyping
+
+Friend: [https://github.com/millsp/ts-toolbelt](https://github.com/millsp/ts-toolbelt?tab=readme-ov-file)
