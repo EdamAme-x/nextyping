@@ -342,4 +342,26 @@ export namespace $number {
     : $invert<_divHelper<Value, $invert<Other> extends _plusSign[] ? $invert<Other> : never>>
     : Other extends _plusSign[] ? $invert<_divHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
     _divHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>
+
+    type _modHelper<
+    Value extends _plusSign[],
+    Other extends _plusSign[],
+    Result extends any[] = []
+  > = $number.$lessThan<Value, Other> extends true
+    ? Value
+    : _divHelper<$number.$sub<Value, Other> extends _plusSign[] ? $number.$sub<Value, Other> : [], Other, [...Result, "+"]>
+
+  export type $mod<
+    Value extends _plusSign[] | _minusSign[],
+    Other extends _plusSign[] | _minusSign[]
+  > =
+    Value extends _plusSign[]
+    ? Other extends _plusSign[]
+    ? _modHelper<Value, Other>
+    : $invert<_modHelper<Value, $invert<Other> extends _plusSign[] ? $invert<Other> : never>>
+    : Other extends _plusSign[] ? $invert<_modHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
+    _modHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>
+
 }
+
+type a = $number.$mod<["+", "+"], ["+", "+", "+"]>
