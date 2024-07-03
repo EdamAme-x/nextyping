@@ -361,7 +361,4 @@ export namespace $number {
     : $invert<_modHelper<Value, $invert<Other> extends _plusSign[] ? $invert<Other> : never>>
     : Other extends _plusSign[] ? $invert<_modHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
     _modHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>
-
 }
-
-type a = $number.$mod<["+", "+"], ["+", "+", "+"]>
