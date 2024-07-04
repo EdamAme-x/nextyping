@@ -365,10 +365,27 @@ export namespace $number {
 }
 
 export namespace $array {
+  export type $new<
+    Value extends any[]
+  > = Value;
+
   export type $push<
     Value extends any[],
     Other extends any
   > = Value extends [] ? [Other] : [...Value, Other]
+
+  export type $pop<
+    Value extends any[]
+  > = Value extends [] ? [] : Value extends [...infer Head, any] ? Head : never;
+
+  export type $shift<
+    Value extends any[]
+  > = Value extends [] ? [] : Value extends [any, ...infer Tail] ? Tail : never;
+
+  export type $unshift<
+    Value extends any[],
+    Other extends any
+  > = Value extends [] ? [Other] : [Other, ...Value];
 
   type _joinHelper<
     Value extends _canToStringTypes[],
@@ -380,6 +397,15 @@ export namespace $array {
     Value extends _canToStringTypes[],
     Separator extends _canToStringTypes = ""
   > = Value extends [] ? "" : _joinHelper<Value, Separator>
-}
 
-type a = $array.$join<["a", "b", 1], "-">
+  export type $concat<
+    Value extends any[],
+    Other extends any[]
+  > = [...Value, ...Other];
+
+  export type $indexOf<
+    Value extends any[],
+    Other extends any,
+    Result extends any[] = []
+  > = Value extends [infer _Head, ...infer Tail] ? $equal<Other, _Head> extends true ? Result["length"] : $indexOf<Tail, Other, [...Result, any]> : -1;
+}
