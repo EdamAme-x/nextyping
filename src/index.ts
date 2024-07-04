@@ -408,4 +408,26 @@ export namespace $array {
     Other extends any,
     Result extends any[] = []
   > = Value extends [infer _Head, ...infer Tail] ? $equal<Other, _Head> extends true ? Result["length"] : $indexOf<Tail, Other, [...Result, any]> : -1;
+
+  type _lastIndexOfHelperGetLastIndex<
+    Value extends any[],
+  > = $pop<Value>["length"];
+
+  type _lastIndexOfHelper<
+    Length extends number,
+    Result extends number
+  > = $length<$number.$sub<$number.$new<Length>, $number.$new<Result>>>
+
+  export type $lastIndexOf<
+    Value extends any[],
+    Other extends any
+  > = $indexOf<$reverse<Value>, Other> extends infer Result ? Result extends -1 ? -1 : _lastIndexOfHelper<_lastIndexOfHelperGetLastIndex<Value>, Result extends number ? Result : never> : never;
+
+  export type $reverse<
+    Value extends any[]
+  > = Value extends [infer Head, ...infer Tail] ? [...$reverse<Tail>, Head] : []
+
+  export type $length<
+    Value extends any[]
+  > = Value["length"]
 }
