@@ -2,7 +2,10 @@
 Next generation type system for TypeScript
 
 Nextyping is superset of typescript
-Exports only types.
+Exports only types.  
+
+You will be able to program dynamically on typescript.
+Try out the more advanced type system.
 
 ```bash
 npx jsr add @edamame-x/nextyping
