@@ -71,15 +71,16 @@ export type $xor<
   Falsy
 >;
 
+type _canToStringTypes =
+  | string
+  | number
+  | bigint
+  | boolean
+  | null
+  | undefined;
+
 // String Transformations types
 export namespace $string {
-  type _canToStringTypes =
-    | string
-    | number
-    | bigint
-    | boolean
-    | null
-    | undefined;
   type _toStringHelper<Target> = Target extends _canToStringTypes
     ? `${Target}`
     : "";
@@ -343,7 +344,7 @@ export namespace $number {
     : Other extends _plusSign[] ? $invert<_divHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
     _divHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>
 
-    type _modHelper<
+  type _modHelper<
     Value extends _plusSign[],
     Other extends _plusSign[],
     Result extends any[] = []
@@ -362,3 +363,23 @@ export namespace $number {
     : Other extends _plusSign[] ? $invert<_modHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, Other>> :
     _modHelper<$invert<Value> extends _plusSign[] ? $invert<Value> : never, $invert<Other> extends _plusSign[] ? $invert<Other> : never>
 }
+
+export namespace $array {
+  export type $push<
+    Value extends any[],
+    Other extends any
+  > = Value extends [] ? [Other] : [...Value, Other]
+
+  type _joinHelper<
+    Value extends _canToStringTypes[],
+    Separator extends _canToStringTypes,
+    Result extends string = ""
+  > = Value extends [infer Head, ...infer _Tail] ? _joinHelper<_Tail extends _canToStringTypes[] ? _Tail : [], Separator, `${Result}${Result extends "" ? "" : Separator}${$string.$toString<Head extends _canToStringTypes ? Head : never>}`> : Result
+
+  export type $join<
+    Value extends _canToStringTypes[],
+    Separator extends _canToStringTypes = ""
+  > = Value extends [] ? "" : _joinHelper<Value, Separator>
+}
+
+type a = $array.$join<["a", "b", 1], "-">
