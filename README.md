@@ -28,6 +28,10 @@ type splittedString = $string.$split<"a1aaa1bbb1cccc", "1">; // ["a", "aaa", "bb
 // and more: https://jsr.io/@edamame-x/nextyping/doc
 ```
 
+## Author
+
+[EdamAme-x](https://github.com/EdamAme-x) All
+
 Registry: JSR / https://jsr.io/@edamame-x/nextyping
 
 Friend: [https://github.com/millsp/ts-toolbelt](https://github.com/millsp/ts-toolbelt?tab=readme-ov-file)
